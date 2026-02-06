@@ -429,6 +429,90 @@
             font-weight: 600;
         }
 
+        /* ── Image Expand — handcrafted in-place zoom ── */
+        /* Cursor tells the user "this is clickable" without being heavy-handed */
+        .product-card .img-wrapper {
+            cursor: zoom-in;
+        }
+
+        /* Backdrop: not a harsh black overlay — a soft frosted veil */
+        .img-expand-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            /* Start invisible */
+            background: rgba(20, 16, 12, 0);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            pointer-events: none;
+            transition: background 0.45s ease, backdrop-filter 0.45s ease, -webkit-backdrop-filter 0.45s ease;
+        }
+        .img-expand-backdrop.active {
+            background: rgba(20, 16, 12, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            pointer-events: all;
+            cursor: zoom-out;
+        }
+
+        /* The ghost image: cloned, absolutely positioned, animates from
+           the original rect to the center of the viewport.
+           Using `will-change` for GPU-accelerated smoothness. */
+        .img-expand-ghost {
+            position: fixed;
+            z-index: 1000;
+            border-radius: 10px;
+            box-shadow: 0 0 0 rgba(0,0,0,0);
+            will-change: top, left, width, height, border-radius, box-shadow;
+            transition:
+                top 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+                left 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+                width 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+                height 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+                border-radius 0.4s ease,
+                box-shadow 0.5s ease;
+            object-fit: cover;
+            cursor: zoom-out;
+            pointer-events: all;
+        }
+        .img-expand-ghost.expanded {
+            border-radius: 14px;
+            box-shadow:
+                0 30px 80px -15px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.08);
+        }
+
+        /* While expanded, dim the source card slightly so user sees the "lift" */
+        .product-card.is-expanding .img-wrapper img {
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        /* Subtle hint label — fades in after expand */
+        .img-expand-hint {
+            position: fixed;
+            z-index: 1001;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            background: rgba(0,0,0,0.25);
+            padding: 6px 18px;
+            border-radius: 40px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease 0.35s, transform 0.4s ease 0.35s;
+        }
+        .img-expand-hint.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
         /* ── Schedule ── */
         .schedule-row {
             display: flex;
@@ -916,6 +1000,156 @@
                 this.style.objectFit = 'cover';
             });
         });
+
+        // ── Image Expand — in-place zoom for Raioane Populare ──
+        // Philosophy: the image "lifts" from its position and floats to center.
+        // No modal, no lightbox plugin. Just geometry + transitions.
+        (function() {
+            let backdrop = null;
+            let ghost = null;
+            let hint = null;
+            let sourceCard = null;
+            let sourceRect = null;
+            let isOpen = false;
+            let isAnimating = false;
+
+            // Create backdrop + hint once, reuse them
+            function ensureDOM() {
+                if (!backdrop) {
+                    backdrop = document.createElement('div');
+                    backdrop.className = 'img-expand-backdrop';
+                    document.body.appendChild(backdrop);
+                    backdrop.addEventListener('click', close);
+                }
+                if (!hint) {
+                    hint = document.createElement('div');
+                    hint.className = 'img-expand-hint';
+                    hint.textContent = 'apasă oriunde pentru a închide';
+                    document.body.appendChild(hint);
+                }
+            }
+
+            function open(card, img) {
+                if (isAnimating || isOpen) return;
+                isAnimating = true;
+                ensureDOM();
+
+                sourceCard = card;
+                const imgEl = img;
+                sourceRect = imgEl.getBoundingClientRect();
+
+                // Clone the image as a fixed-position "ghost"
+                ghost = document.createElement('img');
+                ghost.src = imgEl.src;
+                ghost.alt = imgEl.alt;
+                ghost.className = 'img-expand-ghost';
+                ghost.draggable = false;
+
+                // Start at exactly the source position
+                ghost.style.top = sourceRect.top + 'px';
+                ghost.style.left = sourceRect.left + 'px';
+                ghost.style.width = sourceRect.width + 'px';
+                ghost.style.height = sourceRect.height + 'px';
+                document.body.appendChild(ghost);
+
+                // Hide original so it looks like it "left"
+                sourceCard.classList.add('is-expanding');
+
+                // Calculate target: centered, max 88vw / 82vh, keep aspect ratio
+                const natW = imgEl.naturalWidth || sourceRect.width;
+                const natH = imgEl.naturalHeight || sourceRect.height;
+                const ratio = natW / natH;
+                const maxW = window.innerWidth * 0.88;
+                const maxH = window.innerHeight * 0.82;
+                let targetW, targetH;
+
+                if (maxW / maxH > ratio) {
+                    targetH = Math.min(maxH, natH);
+                    targetW = targetH * ratio;
+                } else {
+                    targetW = Math.min(maxW, natW);
+                    targetH = targetW / ratio;
+                }
+
+                const targetTop = (window.innerHeight - targetH) / 2;
+                const targetLeft = (window.innerWidth - targetW) / 2;
+
+                // Trigger reflow, then animate
+                ghost.getBoundingClientRect();
+
+                // Activate backdrop
+                backdrop.classList.add('active');
+
+                // Animate ghost to center
+                requestAnimationFrame(() => {
+                    ghost.style.top = targetTop + 'px';
+                    ghost.style.left = targetLeft + 'px';
+                    ghost.style.width = targetW + 'px';
+                    ghost.style.height = targetH + 'px';
+                    ghost.classList.add('expanded');
+                    hint.classList.add('visible');
+                });
+
+                ghost.addEventListener('click', close);
+
+                // Lock scroll
+                document.body.style.overflow = 'hidden';
+
+                // Done animating after transition
+                ghost.addEventListener('transitionend', function handler() {
+                    ghost.removeEventListener('transitionend', handler);
+                    isAnimating = false;
+                    isOpen = true;
+                });
+            }
+
+            function close() {
+                if (isAnimating || !isOpen) return;
+                isAnimating = true;
+
+                // Re-read source position (may have scrolled)
+                const imgEl = sourceCard.querySelector('.img-wrapper img');
+                const sr = imgEl.getBoundingClientRect();
+
+                // Animate ghost back to source position
+                ghost.classList.remove('expanded');
+                ghost.style.top = sr.top + 'px';
+                ghost.style.left = sr.left + 'px';
+                ghost.style.width = sr.width + 'px';
+                ghost.style.height = sr.height + 'px';
+
+                // Fade backdrop
+                backdrop.classList.remove('active');
+                hint.classList.remove('visible');
+
+                ghost.addEventListener('transitionend', function handler() {
+                    ghost.removeEventListener('transitionend', handler);
+                    // Show original again
+                    sourceCard.classList.remove('is-expanding');
+                    // Clean up ghost
+                    ghost.remove();
+                    ghost = null;
+                    document.body.style.overflow = '';
+                    isAnimating = false;
+                    isOpen = false;
+                });
+            }
+
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isOpen) close();
+            });
+
+            // Attach to all product-card images inside #raioane
+            document.querySelectorAll('#raioane .product-card .img-wrapper').forEach(wrapper => {
+                wrapper.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const card = this.closest('.product-card');
+                    const img = this.querySelector('img');
+                    if (card && img) open(card, img);
+                });
+            });
+        })();
     </script>
 </body>
 </html>
