@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despre Companie — La Doi Pași Spafy</title>
+    <meta name="description" content="La Doi Pași Spafy — supermarket de familie din 1996, în slujba comunității.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#48B02C',
+                        'primary-dark': '#3a9023',
+                        secondary: '#63422B',
+                        'secondary-dark': '#4a3120',
+                        light: '#F9F9F9',
+                    },
+                    fontFamily: {
+                        sans: ['"Open Sans"', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ── Base ── */
+        *, *::before, *::after { box-sizing: border-box; }
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        html, body {
+            width: 100%;
+            max-width: 100%;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.7;
+            letter-spacing: 0.02em;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* ── Global media / image safety ── */
+        img, video, iframe, svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: rgba(255,255,255,0.97);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+        }
+        .nav-link {
+            position: relative;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover { color: #48B02C; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #48B02C;
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        .nav-link.active-link::after {
+            width: 100%;
+            left: 0;
+        }
+        .nav-link.active-link { color: #48B02C; }
+
+        /* ── Hamburger ── */
+        .hamburger { cursor: pointer; display: flex; flex-direction: column; gap: 5px; z-index: 60; }
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: #333;
+            border-radius: 3px;
+            transition: transform 0.35s ease, opacity 0.25s ease, background 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+        /* ── Mobile Menu ── */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.77,0.2,0.05,1);
+        }
+        .mobile-menu.open { transform: translateX(0); }
+        .mobile-menu a {
+            font-size: 1.5rem;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+        .mobile-menu a:hover { color: #48B02C; }
+
+        /* ── Section Titles ── */
+        .section-title {
+            font-size: clamp(1.6rem, 4vw, 2.6rem);
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .section-title span { color: #48B02C; }
+        .section-divider {
+            width: 60px;
+            height: 3px;
+            background: #48B02C;
+            margin: 0 auto 2.5rem;
+            border-radius: 3px;
+        }
+
+        /* ── About Image ── */
+        .about-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        .about-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .about-img-wrapper:hover img { transform: scale(1.03); }
+        .about-img-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(to top, rgba(72,176,44,0.10), transparent);
+            pointer-events: none;
+        }
+
+        /* ── Bullet list styling ── */
+        .about-list li {
+            position: relative;
+            padding-left: 1.4rem;
+            margin-bottom: 0.4rem;
+        }
+        .about-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6em;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #48B02C;
+        }
+
+        /* ── Footer ── */
+        .footer-link {
+            color: rgba(255,255,255,0.8);
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+        .footer-link:hover { color: #48B02C; }
+
+        /* ── Scroll-to-top ── */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: #48B02C;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s ease;
+            box-shadow: 0 4px 15px rgba(72,176,44,0.35);
+            z-index: 40;
+        }
+        .scroll-top.visible { opacity: 1; visibility: visible; }
+        .scroll-top:hover { background: #3a9023; transform: translateY(-3px); }
+
+        /* ── Image fallback ── */
+        img { background-color: #e5e7eb; }
+
+        /* ── AOS overflow containment ── */
+        section, footer {
+            overflow-x: hidden;
+        }
+
+        /* ── Grid/flex children min-width fix ── */
+        .grid > * {
+            min-width: 0;
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- ═══════════ NAVBAR ═══════════ -->
+    <nav class="navbar fixed top-0 left-0 w-full z-50 px-4 sm:px-8 py-4 flex items-center justify-between">
+        <a href="index.html" class="logo-text flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-wider z-10 transition-colors duration-300" style="text-decoration:none; color:#8ece7c;">
+            <img src="logo.png" alt="Spafy" class="h-9 sm:h-10 w-auto"> <span style="color:#8AC33E;">Spafy</span>
+        </a>
+
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-8">
+            <a href="index.html" class="nav-link font-semibold text-sm tracking-widest uppercase">Acasă</a>
+            <a href="despre.html" class="nav-link active-link font-semibold text-sm tracking-widest uppercase">Despre Companie</a>
+            <a href="index.html#contact" class="nav-link font-semibold text-sm tracking-widest uppercase">Contact</a>
+        </div>
+
+        <!-- Hamburger (mobile) -->
+        <div class="hamburger md:hidden" id="hamburger" aria-label="Meniu mobil">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-link">Acasă</a>
+        <a href="despre.html" class="mobile-link">Despre Companie</a>
+        <a href="index.html#raioane" class="mobile-link">Raioane</a>
+        <a href="index.html#program" class="mobile-link">Program</a>
+        <a href="index.html#contact" class="mobile-link">Contact</a>
+    </div>
+
+
+    <!-- ═══════════ HERO BANNER ═══════════ -->
+    <section class="relative pt-28 pb-16 sm:pt-36 sm:pb-20 bg-light">
+        <div class="max-w-6xl mx-auto px-4 sm:px-8 text-center">
+            <p class="text-sm uppercase tracking-widest text-primary font-semibold mb-3" data-aos="fade-down">
+                <a href="index.html" class="text-gray-400 hover:text-primary transition-colors" style="text-decoration:none;">Acasă</a>
+                <span class="text-gray-300 mx-2">/</span>
+                Despre Companie
+            </p>
+            <h1 class="section-title" data-aos="fade-up">Despre <span>Companie</span></h1>
+            <div class="section-divider" data-aos="fade-up" data-aos-delay="100"></div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════ DESPRE COMPANIE ═══════════ -->
+    <section class="py-16 sm:py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                <!-- Image -->
+                <div class="about-img-wrapper" data-aos="fade-right" data-aos-delay="200" style="min-height:320px;">
+                    <img src="despre.jpg" alt="Despre La Doi Pași Spafy" loading="lazy">
+                </div>
+
+                <!-- Text -->
+                <div data-aos="fade-left" data-aos-delay="300">
+                    <p class="text-lg sm:text-xl font-bold text-secondary mb-4" style="line-height:1.4;">
+                        Din 1996, în slujba comunității noastre.
+                    </p>
+                    <p class="text-base text-gray-600 mb-6 leading-relaxed">
+                        La Doi Pași Spafy este un supermarket de familie care servește comunitatea locală de aproape trei decenii. Cu produse proaspete, prețuri corecte și o atmosferă primitoare, suntem mai mult decât un simplu magazin — suntem parte din viața voastră de zi cu zi.
+                    </p>
+
+                    <div class="space-y-5">
+                        <!-- Cine suntem -->
+                        <div>
+                            <h3 class="text-lg font-bold text-primary mb-2">🏪 Cine suntem</h3>
+                            <ul class="about-list text-gray-600 text-sm sm:text-base leading-relaxed list-none">
+                                <li>Un supermarket de familie cu tradiție din 1996</li>
+                                <li>Parte a rețelei „La Doi Pași" — cea mai mare rețea de magazine locale din România</li>
+                                <li>Angajați din comunitate, pentru comunitate</li>
+                            </ul>
+                        </div>
+
+                        <!-- Ce facem -->
+                        <div>
+                            <h3 class="text-lg font-bold text-primary mb-2">🛍️ Ce facem</h3>
+                            <ul class="about-list text-gray-600 text-sm sm:text-base leading-relaxed list-none">
+                                <li>Oferim produse proaspete zilnic: carne, panificație, lactate și legume</li>
+                                <li>Livrăm calitate la prețuri accesibile pentru fiecare familie</li>
+                                <li>Susținem producătorii locali și produsele românești</li>
+                            </ul>
+                        </div>
+
+                        <!-- Valorile noastre -->
+                        <div>
+                            <h3 class="text-lg font-bold text-primary mb-2">💚 Valorile noastre</h3>
+                            <ul class="about-list text-gray-600 text-sm sm:text-base leading-relaxed list-none">
+                                <li>Prospețime — produse noi în fiecare zi</li>
+                                <li>Corectitudine — prețuri oneste, fără surprize</li>
+                                <li>Comunitate — implicare locală și respect pentru clienți</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════ CONTACT & FOOTER ═══════════ -->
+    <footer class="text-white" style="background:#3b2518;">
+        <div class="max-w-6xl mx-auto px-4 sm:px-8 py-16 sm:py-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16">
+                <!-- Col 1: Brand -->
+                <div data-aos="fade-up">
+                    <h3 class="text-2xl font-bold mb-4">La Doi Pași <span class="text-primary">Spafy</span></h3>
+                    <p class="text-sm leading-relaxed" style="color:rgba(255,255,255,0.7);">
+                        Supermarket-ul familiei tale din 1996. Produse proaspete, prețuri corecte, atmosferă primitoare — la doi pași de casa ta.
+                    </p>
+                </div>
+
+                <!-- Col 2: Contact -->
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h4 class="text-lg font-bold mb-4 text-primary">Contact</h4>
+                    <ul class="space-y-3 text-sm" style="color:rgba(255,255,255,0.8);">
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5">📧</span>
+                            <div>
+                                <p class="text-xs text-gray-400 mb-0.5">Email</p>
+                                <a href="mailto:contact@ladoipasispafy.ro" class="footer-link">contact@ladoipasispafy.ro</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5">📞</span>
+                            <div>
+                                <p class="text-xs text-gray-400 mb-0.5">Telefon</p>
+                                <a href="tel:+40700000000" class="footer-link">+40 700 000 000</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-0.5">💬</span>
+                            <div>
+                                <p class="text-xs text-gray-400 mb-0.5">WhatsApp</p>
+                                <a href="https://wa.me/40700000000" target="_blank" rel="noopener" class="footer-link">Trimite mesaj</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Social & Links -->
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h4 class="text-lg font-bold mb-4 text-primary">Urmărește-ne</h4>
+                    <a href="https://www.facebook.com/profile.php?id=61575737498498" target="_blank" rel="noopener"
+                       class="inline-flex items-center gap-3 bg-white/10 hover:bg-primary px-5 py-3 rounded-full transition-all duration-300 group">
+                        <svg class="w-5 h-5 fill-current text-white" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <span class="text-sm font-semibold text-white">Facebook</span>
+                    </a>
+
+                    <div class="mt-8">
+                        <h4 class="text-lg font-bold mb-3 text-primary">Linkuri rapide</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="index.html" class="footer-link">Acasă</a></li>
+                            <li><a href="despre.html" class="footer-link">Despre Companie</a></li>
+                            <li><a href="index.html#raioane" class="footer-link">Raioane</a></li>
+                            <li><a href="index.html#program" class="footer-link">Program</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="border-t border-white/10">
+            <div class="max-w-6xl mx-auto px-4 sm:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style="color:rgba(255,255,255,0.5);">
+                <p>&copy; 2026 La Doi Pași Spafy. Toate drepturile rezervate.</p>
+                <p>Creat cu 💚 pentru comunitate</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ═══════════ SCROLL TO TOP ═══════════ -->
+    <button class="scroll-top" id="scrollTop" aria-label="Înapoi sus">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+
+    <!-- ═══════════ SCRIPTS ═══════════ -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 60 });
+
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
+        }, { passive: true });
+        scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('error', function() {
+                const w = this.parentElement.offsetWidth || 400;
+                const h = this.parentElement.offsetHeight || 300;
+                const label = this.alt || 'Image';
+                this.src = `data:image/svg+xml,${encodeURIComponent(
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+                    '<rect fill="#e8f5e3" width="' + w + '" height="' + h + '"/>' +
+                    '<rect fill="#48B02C" opacity="0.12" x="0" y="0" width="' + w + '" height="' + h + '" rx="8"/>' +
+                    '<text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" font-family="Times New Roman,serif" font-size="18" fill="#48B02C" font-weight="bold">📷</text>' +
+                    '<text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="Times New Roman,serif" font-size="14" fill="#63422B">' + label + '</text>' +
+                    '</svg>'
+                )}`;
+                this.style.objectFit = 'cover';
+            });
+        });
+    </script>
+</body>
+</html>
