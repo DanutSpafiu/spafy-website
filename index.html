@@ -217,43 +217,179 @@
             border-radius: 3px;
         }
 
-        /* ── About Image ── */
-        .about-img-wrapper {
+        /* ── "Ce găsești" — entire section canvas ── */
+        /* Warm off-white with a subtle paper-like feel */
+        .gasesti-section {
+            background: #faf8f5;
             position: relative;
             overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
         }
-        .about-img-wrapper img {
+        /* Hand-drawn wavy top border — organic, not corporate */
+        .gasesti-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 48'%3E%3Cpath fill='%23ffffff' d='M0,32 C180,48 360,0 540,24 C720,48 900,8 1080,28 C1260,48 1380,16 1440,32 L1440,0 L0,0 Z'/%3E%3C/svg%3E") no-repeat center top;
+            background-size: cover;
+            z-index: 1;
+        }
+
+        /* Section heading — feels hand-lettered, not corporate */
+        .gasesti-heading {
+            font-size: clamp(1.5rem, 4.5vw, 2.8rem);
+            font-weight: 800;
+            color: #3a2a1a;
+            text-align: left;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+        }
+        .gasesti-heading em {
+            font-style: normal;
+            color: #48B02C;
+            position: relative;
+        }
+        /* Rough underline accent — like a marker highlight */
+        .gasesti-heading em::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            right: -4px;
+            bottom: 2px;
+            height: 10px;
+            background: rgba(72,176,44,0.18);
+            border-radius: 4px 2px 5px 3px;
+            z-index: -1;
+            transform: rotate(-0.5deg);
+        }
+        .gasesti-subtitle {
+            font-size: 1rem;
+            color: #8a7a6a;
+            max-width: 380px;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── Photo — not a perfect rectangle ── */
+        .gasesti-photo {
+            position: relative;
+            /* Organic blob-ish clipping — feels alive */
+            border-radius: 42% 58% 62% 38% / 46% 40% 60% 54%;
+            overflow: hidden;
+            aspect-ratio: 4 / 3.8;
+            box-shadow:
+                0 18px 50px -12px rgba(58,42,26,0.18),
+                0 0 0 3px rgba(72,176,44,0.12);
+            transition: border-radius 0.8s ease, box-shadow 0.5s ease;
+        }
+        /* Morphs slightly on hover — living, breathing shape */
+        .gasesti-photo:hover {
+            border-radius: 50% 50% 44% 56% / 54% 46% 54% 46%;
+            box-shadow:
+                0 22px 60px -10px rgba(58,42,26,0.22),
+                0 0 0 4px rgba(72,176,44,0.2);
+        }
+        .gasesti-photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s ease;
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .about-img-wrapper:hover img { transform: scale(1.03); }
-        .about-img-wrapper::after {
+        .gasesti-photo:hover img {
+            transform: scale(1.06);
+        }
+        /* Decorative leaf-green dot — a small designer touch */
+        .gasesti-photo::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40%;
-            background: linear-gradient(to top, rgba(72,176,44,0.10), transparent);
-            pointer-events: none;
+            top: 12px;
+            right: 16px;
+            width: 14px;
+            height: 14px;
+            background: #48B02C;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: dotPulse 3s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.4); opacity: 0.4; }
         }
 
-        /* ── Feature Cards ── */
-        .feature-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            border-left: 4px solid #48B02C;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* ── Feature items — NOT cards, more like annotated list ── */
+        /* Each item has a chunky icon, warm spacing, and a human feel */
+        .gasesti-item {
+            display: flex;
+            gap: 1.1rem;
+            align-items: flex-start;
+            padding: 1.25rem 1.4rem;
+            background: transparent;
+            /* Dashed border only at bottom — like a pencil line */
+            border-bottom: 1.5px dashed rgba(72,176,44,0.25);
+            transition: background 0.35s ease, transform 0.3s ease;
+            position: relative;
         }
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+        .gasesti-item:last-child {
+            border-bottom: none;
+        }
+        .gasesti-item:hover {
+            background: rgba(72,176,44,0.04);
+            transform: translateX(6px);
+        }
+        /* Icon circle — not perfect; slightly squished for personality */
+        .gasesti-icon {
+            flex-shrink: 0;
+            width: 52px;
+            height: 48px;
+            border-radius: 38% 62% 50% 50% / 56% 44% 56% 44%;
+            background: linear-gradient(135deg, #e8f5e0 0%, #d4edcc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+            /* Slight tilt for playfulness */
+            transform: rotate(-3deg);
+        }
+        .gasesti-item:hover .gasesti-icon {
+            transform: rotate(0deg) scale(1.1);
+            background: linear-gradient(135deg, #c9e8b8 0%, #a8d98a 100%);
+        }
+        .gasesti-item-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #3a2a1a;
+            margin-bottom: 3px;
+            letter-spacing: -0.01em;
+        }
+        .gasesti-item-desc {
+            font-size: 0.9rem;
+            color: #6b5e52;
+            line-height: 1.6;
+        }
+        /* Small green tag on hover — a warm micro-interaction */
+        .gasesti-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #48B02C;
+            background: rgba(72,176,44,0.08);
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-top: 6px;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+        }
+        .gasesti-item:hover .gasesti-tag {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* ── Product Grid ── */
@@ -428,41 +564,79 @@
 
 
     <!-- ═══════════ CE GĂSEȘTI LA NOI ═══════════ -->
-    <section class="py-16 sm:py-24 bg-light">
-        <div class="max-w-6xl mx-auto px-4 sm:px-8">
-            <h2 class="section-title" data-aos="fade-up">Ce găsești <span>la noi?</span></h2>
-            <div class="section-divider" data-aos="fade-up" data-aos-delay="100"></div>
+    <section class="gasesti-section" style="padding: 5rem 0 4rem;">
+        <div style="max-width: 1100px; margin: 0 auto; padding: 0 1.5rem;">
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-                <!-- Image -->
-                <div class="about-img-wrapper" data-aos="fade-right" data-aos-delay="200" style="min-height:300px;">
-                    <img src="img3.jpg" alt="Produse La Doi Pași Spafy" loading="lazy">
+            <!-- Two-column layout: asymmetric on purpose -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start;" class="gasesti-grid">
+
+                <!-- Left: text + items -->
+                <div data-aos="fade-up" data-aos-duration="800">
+                    <h2 class="gasesti-heading">
+                        Ce găsești<br><em>la noi?</em>
+                    </h2>
+                    <p class="gasesti-subtitle">
+                        Nu suntem doar un magazin. Suntem vecinul tău care știe ce-ți place.
+                    </p>
+
+                    <!-- Items — each one a small story -->
+                    <div>
+                        <div class="gasesti-item" data-aos="fade-up" data-aos-delay="100">
+                            <div class="gasesti-icon">🌿</div>
+                            <div>
+                                <div class="gasesti-item-title">Produse alese, nu doar puse pe raft</div>
+                                <div class="gasesti-item-desc">
+                                    Verificăm și alegem personal fiecare produs bio. Dacă noi nu l-am mânca, nu ajunge la tine.
+                                </div>
+                                <span class="gasesti-tag">calitate reală</span>
+                            </div>
+                        </div>
+
+                        <div class="gasesti-item" data-aos="fade-up" data-aos-delay="200">
+                            <div class="gasesti-icon">🥖</div>
+                            <div>
+                                <div class="gasesti-item-title">Pâine caldă și carne tăiată azi</div>
+                                <div class="gasesti-item-desc">
+                                    În fiecare dimineață, rafturile se umplu cu pâine aburindă și carne proaspătă de la producători din zonă.
+                                </div>
+                                <span class="gasesti-tag">prospețime zilnică</span>
+                            </div>
+                        </div>
+
+                        <div class="gasesti-item" data-aos="fade-up" data-aos-delay="300">
+                            <div class="gasesti-icon">☕</div>
+                            <div>
+                                <div class="gasesti-item-title">O vorbă bună și o cafea pe drum</div>
+                                <div class="gasesti-item-desc">
+                                    La noi nu ești doar un client. Intri, stai de vorbă, iei o cafea bună și pleci cu zâmbetul.
+                                </div>
+                                <span class="gasesti-tag">ca acasă</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Feature Cards -->
-                <div class="space-y-5" data-aos="fade-left" data-aos-delay="300">
-                    <div class="feature-card">
-                        <h3 class="text-lg font-bold text-secondary mb-1">🌿 Produse Bio și de calitate</h3>
-                        <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
-                            Oferim o gamă variată de produse bio, sănătoase și certificate. Calitatea este prioritatea noastră.
-                        </p>
-                    </div>
-                    <div class="feature-card">
-                        <h3 class="text-lg font-bold text-secondary mb-1">🥩 Carne și pâine proaspătă</h3>
-                        <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
-                            Alimente proaspete zilnic: carne, panificație și cofetărie. De la producători locali direct la raftul tău.
-                        </p>
-                    </div>
-                    <div class="feature-card">
-                        <h3 class="text-lg font-bold text-secondary mb-1">😊 Servire rapidă și atmosferă plăcută</h3>
-                        <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
-                            Ne mândrim cu un personal amabil și un magazin curat și modern. Venim cu zâmbetul pe buze!
-                        </p>
+                <!-- Right: photo with organic shape -->
+                <div data-aos="fade-up" data-aos-delay="200" data-aos-duration="900" style="display: flex; justify-content: center;">
+                    <div class="gasesti-photo">
+                        <img src="img3.jpg" alt="Produse La Doi Pași Spafy" loading="lazy">
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
+
+    <!-- Responsive grid for the gasesti section -->
+    <style>
+        @media (min-width: 860px) {
+            .gasesti-grid {
+                grid-template-columns: 1.15fr 0.85fr !important;
+                gap: 4rem !important;
+                align-items: center !important;
+            }
+        }
+    </style>
 
 
     <!-- ═══════════ RAIOANE POPULARE ═══════════ -->
