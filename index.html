@@ -294,6 +294,7 @@
                 0 0 0 4px rgba(72,176,44,0.2);
         }
         .gasesti-photo img {
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -410,6 +411,7 @@
             aspect-ratio: 4/3;
         }
         .product-card img {
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -591,9 +593,30 @@
         img { background-color: #e5e7eb; }
 
         /* ── AOS overflow containment ── */
-        /* Prevent AOS fade-left/fade-right from causing horizontal overflow */
+        /* Prevent AOS fade-left/fade-right from causing horizontal overflow.
+           Use clip instead of hidden so vertical content isn't clipped on mobile. */
         section, footer {
-            overflow-x: hidden;
+            overflow-x: clip;
+        }
+
+        /* ── Mobile fixes — images must be visible and scaling naturally ── */
+        @media (max-width: 859px) {
+            /* Blob photos need a max-width so they don't overflow on small screens */
+            .gasesti-photo {
+                max-width: 320px;
+                width: 100%;
+                margin: 0 auto;
+            }
+            /* Product cards: ensure images fill their container on single-column */
+            .product-card .img-wrapper {
+                aspect-ratio: 4/3;
+                width: 100%;
+            }
+            .product-card .img-wrapper img {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
         }
 
         /* ── Grid/flex children min-width fix ── */
