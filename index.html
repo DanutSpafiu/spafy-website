@@ -158,7 +158,7 @@
         }
         .mobile-menu a:hover { color: #48B02C; }
 
-        /* ── Hero ── */
+        /* ── Hero — atmospheric, organic, alive ── */
         .hero {
             position: relative;
             min-height: 100vh;
@@ -167,23 +167,200 @@
             justify-content: center;
             text-align: center;
             overflow: hidden;
+            background: #0a0805;
         }
+        /* The artwork drifts slowly like a Ken Burns shot —
+           just enough motion to feel alive, not enough to distract.
+           Reserve a strip at the bottom so the wave + scroll cue don't
+           cover the artwork's own `spafy.ro` logo. */
         .hero-bg {
             position: absolute;
-            inset: 0;
-            background: url('images/img1.jpg') center/cover no-repeat;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 150px;
+            background: #0a0805 url('images/depozit2.jpeg') center/contain no-repeat;
             z-index: 0;
+            animation: heroDrift 28s ease-in-out infinite alternate;
+            will-change: transform;
         }
-        .hero-bg::after {
-            content: '';
+        @keyframes heroDrift {
+            0%   { transform: scale(1.0)  translate(0, 0); }
+            100% { transform: scale(1.04) translate(-0.6%, -0.4%); }
+        }
+        /* Warm corner glows — gold + a green accent that echo the
+           brand palette and the sparkles inside the artwork.
+           Screen blend lets the dark letterbox bars glow softly. */
+        .hero-glow {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.55) 100%);
-        }
-        .hero-content {
-            position: relative;
             z-index: 1;
-            padding: 2rem 1rem;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 8% 12%,  rgba(243, 146, 0, 0.22) 0%, transparent 32%),
+                radial-gradient(circle at 92% 18%, rgba(243, 146, 0, 0.16) 0%, transparent 36%),
+                radial-gradient(circle at 12% 92%, rgba(72, 176, 44, 0.14) 0%, transparent 34%),
+                radial-gradient(circle at 88% 88%, rgba(243, 146, 0, 0.20) 0%, transparent 32%);
+            mix-blend-mode: screen;
+            animation: heroBreath 9s ease-in-out infinite alternate;
+        }
+        @keyframes heroBreath {
+            0%   { opacity: 0.8; }
+            100% { opacity: 1.0; }
+        }
+        /* Soft outer darkening — pulls the eye toward the center, frames the image. */
+        .hero-vignette {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: radial-gradient(ellipse 85% 75% at 50% 55%,
+                transparent 0%, transparent 55%, rgba(0,0,0,0.45) 100%);
+        }
+        /* Floating gold dust — small particles drift upward like embers.
+           Each one has its own size, lane, and timing for organic motion. */
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .hero-particles .particle {
+            position: absolute;
+            top: 0; left: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 210, 110, 0.95) 0%, rgba(243, 146, 0, 0.4) 45%, transparent 75%);
+            box-shadow: 0 0 8px rgba(243, 146, 0, 0.45);
+            opacity: 0;
+            animation: particleRise linear infinite;
+            will-change: transform, opacity;
+        }
+        .hero-particles .p1 { --x:  7%; width: 6px; height: 6px; animation-duration: 17s; animation-delay: 0s;  }
+        .hero-particles .p2 { --x: 24%; width: 4px; height: 4px; animation-duration: 21s; animation-delay: 4s;  }
+        .hero-particles .p3 { --x: 41%; width: 5px; height: 5px; animation-duration: 24s; animation-delay: 9s;  }
+        .hero-particles .p4 { --x: 58%; width: 3px; height: 3px; animation-duration: 19s; animation-delay: 2s;  }
+        .hero-particles .p5 { --x: 76%; width: 5px; height: 5px; animation-duration: 22s; animation-delay: 11s; }
+        .hero-particles .p6 { --x: 93%; width: 4px; height: 4px; animation-duration: 26s; animation-delay: 6s;  }
+        @keyframes particleRise {
+            0%   { transform: translate3d(var(--x), 105vh, 0) scale(0.4); opacity: 0; }
+            8%   { opacity: 0.85; }
+            50%  { transform: translate3d(calc(var(--x) + 18px), 50vh, 0) scale(1); }
+            92%  { opacity: 0.5; }
+            100% { transform: translate3d(calc(var(--x) - 10px), -8vh, 0) scale(0.6); opacity: 0; }
+        }
+        /* Scroll cue — friendly, unobtrusive, gently bouncing.
+           Fades in after the image has had a moment to land. */
+        .hero-scroll {
+            position: absolute;
+            left: 50%;
+            bottom: 4.5rem;
+            transform: translateX(-50%);
+            z-index: 4;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.55rem;
+            color: rgba(255, 215, 145, 0.92);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: heroScrollIn 1s ease-out 1.4s forwards;
+            transition: color 0.3s ease;
+        }
+        .hero-scroll:hover { color: #F39200; }
+        .hero-scroll-ring {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 215, 145, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scrollBob 2.2s ease-in-out infinite;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+        .hero-scroll:hover .hero-scroll-ring {
+            border-color: #F39200;
+            background: rgba(243, 146, 0, 0.08);
+        }
+        .hero-scroll-ring svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        @keyframes heroScrollIn { to { opacity: 1; } }
+        @keyframes scrollBob {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(6px); }
+        }
+        /* Wavy organic transition into the cream section below —
+           matches the site's hand-drawn wave language. */
+        .hero-wave {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            z-index: 3;
+            pointer-events: none;
+            display: block;
+        }
+        @media (max-width: 640px) {
+            /* Lighter blur — mobile GPUs strain on heavy filter radii */
+            .hero::before {
+                filter: blur(24px) brightness(0.42) saturate(0.85);
+                inset: -24px;
+            }
+            .hero-bg     { bottom: 110px; }
+            /* Bigger tap target (~52px hit area incl. padding) */
+            .hero-scroll {
+                bottom: 2.2rem;
+                font-size: 0.6rem;
+                letter-spacing: 0.18em;
+                gap: 0.45rem;
+                padding: 6px;
+            }
+            .hero-scroll-ring     { width: 40px; height: 40px; }
+            .hero-scroll-ring svg { width: 15px; height: 15px; }
+            .hero-wave            { height: 38px; }
+            /* Soften corner-glow intensity so they don't blow out
+               against the small dark canvas */
+            .hero-glow {
+                background:
+                    radial-gradient(circle at 8% 12%,  rgba(243, 146, 0, 0.18) 0%, transparent 36%),
+                    radial-gradient(circle at 92% 18%, rgba(243, 146, 0, 0.12) 0%, transparent 40%),
+                    radial-gradient(circle at 12% 92%, rgba(72, 176, 44, 0.10) 0%, transparent 38%),
+                    radial-gradient(circle at 88% 88%, rgba(243, 146, 0, 0.16) 0%, transparent 36%);
+            }
+            /* Thin the particle field on small screens */
+            .hero-particles .p2,
+            .hero-particles .p4,
+            .hero-particles .p6 { display: none; }
+        }
+        /* Very small phones (e.g., iPhone SE) — tighter cue + image room */
+        @media (max-width: 380px) {
+            .hero-bg              { bottom: 95px; }
+            .hero-scroll          { bottom: 1.6rem; font-size: 0.56rem; }
+            .hero-scroll-ring     { width: 36px; height: 36px; }
+            .hero-wave            { height: 32px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hero-bg,
+            .hero-glow,
+            .hero-particles .particle,
+            .hero-scroll,
+            .hero-scroll-ring {
+                animation: none;
+            }
+            .hero-scroll { opacity: 1; }
         }
         .hero-title {
             font-family: 'Poppins', sans-serif;
@@ -1067,16 +1244,30 @@
 
     <!-- ═══════════ HERO ═══════════ -->
     <section class="hero" id="acasa">
+        <!-- Artwork — drifts slowly via Ken Burns animation -->
         <div class="hero-bg" role="img" aria-label="Imagine supermarket La Doi Pași Spafy"></div>
-        <div class="hero-content">
-            <p class="hero-subtitle" data-aos="fade-down" data-aos-delay="100">Bine ați venit la</p>
-            <h1 class="hero-title" data-aos="zoom-in" data-aos-delay="300"> <span style="color:#F39200">La</span> <span style="color:#8AC33E;"> Doi Pași </span> <br><span class="text-primary" style="color: #F39200;">Spafy</span></h1>
-            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="500" style="margin-top:0.5rem;">Mai mult decât un supermarket — un loc aproape de tine, unde găsești zilnic produse proaspete, atent alese pentru tine și familia ta.
-            De la carne proaspătă și legume de sezon, până la produse de bază și specialități, totul este gândit să-ți ofere calitate, rapid și fără compromisuri.
-            Suntem aici, în Crasna, pentru tine. Zi de zi.
-            Descoperă diferența.</p>
-            <a href="despre.html" class="hero-badge" data-aos="fade-up" data-aos-delay="700">Descoperă povestea noastră</a>
+        <!-- Atmosphere layers: corner warmth, soft vignette, drifting sparkles -->
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-vignette" aria-hidden="true"></div>
+        <div class="hero-particles" aria-hidden="true">
+            <span class="particle p1"></span>
+            <span class="particle p2"></span>
+            <span class="particle p3"></span>
+            <span class="particle p4"></span>
+            <span class="particle p5"></span>
+            <span class="particle p6"></span>
         </div>
+        <!-- Scroll cue — invites the visitor into the page -->
+        <a href="#raioane" class="hero-scroll" aria-label="Mergi la conținut">
+            <span>Explorează</span>
+            <span class="hero-scroll-ring">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9 L12 16 L18 9"/></svg>
+            </span>
+        </a>
+        <!-- Organic wave transition into the cream section below -->
+        <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+            <path fill="#faf8f5" d="M0,50 C180,75 360,15 540,40 C720,65 900,20 1080,45 C1260,70 1380,30 1440,50 L1440,80 L0,80 Z"/>
+        </svg>
     </section>
 
 
